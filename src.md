@@ -26,4 +26,5 @@ This file contains useful links, tips, and code snippets for each topic I learn 
 
 ## Basic about shell
 - [Tutorial - Write a Shell in C](https://brennan.io/2015/01/16/write-a-shell-in-c/)
+- [Writing Your Own Shell](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf)
 
