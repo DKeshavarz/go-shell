@@ -2,8 +2,10 @@ package shell
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 
 	"systemgroup.net/bootcamp/go/v1/shell/internal/commands"
@@ -76,13 +78,31 @@ func (s *Shell) excute(args []string){
 		return
 	}
 
-	command, ok := s.Handlers[args[0]]
+	cmd, ok := s.Handlers[args[0]]
 
+	var msg string
+	var err error
 	if ok {
-		msg, err := command(args[1:])
-		fmt.Println("msg:", msg)
-		fmt.Println("err:", err)
+		msg, err = cmd(args[1:])
 	}else{
-		fmt.Println("no command")
+		msg, err = s.systemCommand(args)
 	}
+	fmt.Println("msg:", msg)
+	fmt.Println("err:", err)
+}
+
+func (s *Shell) systemCommand(args []string)(string, error){
+
+	command := exec.Command(args[0], args[1:]...)
+
+	var stdout, stderr bytes.Buffer
+	command.Stdout = &stdout
+	command.Stderr = &stderr
+
+	err := command.Run()
+	if err != nil {
+		return stderr.String(), err
+	}
+
+	return stdout.String(), nil
 }
