@@ -4,17 +4,24 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 
-	"systemgroup.net/bootcamp/go/v1/shell/internal/models"
+	"systemgroup.net/bootcamp/go/v1/shell/internal/commands"
 )
 
-type Shell struct {
-	History []string
-	CurrentUser *models.User
-}
-
 func New()*Shell{
-	return &Shell{}
+	shell := &Shell{
+		Handlers: make(map[string]func([]string) (string, error)),
+	}
+
+	shell.register("cd",commands.Cd)
+	shell.register("echo",commands.Echo)
+	shell.register("type",commands.Type)
+	shell.register("cat",commands.Cat)
+	shell.register("pwd",commands.Pwd)
+	shell.register("exit",commands.Exit)
+
+	return shell
 }
 
 func (s *Shell)Start(){
@@ -23,17 +30,14 @@ func (s *Shell)Start(){
 		s.show()
 		command := s.read()
 		tokens, _ := s.tokenizer(command)
-		
-		for _, val := range tokens {
-			fmt.Println(val)
-		}
+		s.excute(tokens)
 	}
 }
 
 func (s *Shell)read()(str string){
 	reader := bufio.NewReader(os.Stdin)
 	text, _ := reader.ReadString('\n')
-	return text
+	return strings.TrimSpace(text)
 }
 
 func (s *Shell)show(){
@@ -51,14 +55,34 @@ func (s *Shell)tokenizer(input string)(tokens []string,err error){
 	var str []rune
 
 	for _, val := range input {
-
+		
 		if val == ' ' && len(str) > 0{
 			tokens = append(tokens, string(str))
 			str = make([]rune, 0)
-		}else {
+		}else if val != ' '{
 			str = append(str, val)
 		}
 	}
 
 	return tokens, nil
+}
+
+func (s *Shell) register(handleName string, handle func([]string) (string, error)){
+	s.Handlers[handleName] = handle
+}
+
+func (s *Shell) excute(args []string){
+	if len(args) <= 0 {
+		return
+	}
+
+	command, ok := s.Handlers[args[0]]
+
+	if ok {
+		msg, err := command(args[1:])
+		fmt.Println("msg:", msg)
+		fmt.Println("err:", err)
+	}else{
+		fmt.Println("no command")
+	}
 }
