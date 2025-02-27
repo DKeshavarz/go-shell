@@ -94,11 +94,12 @@ func Exit(args []string) (msg string, err error) {
 		return
 	} 
 	
-	if len(args) ==  1{
-		if code, err = strconv.Atoi(args[0]); err != nil {
+	if len(args) <= 1{
+		if code, err = strconv.Atoi(args[0]); err == nil {
 			msg = fmt.Sprintf("exit status %d",code)
 			return
 		}
+		return
 	}
 	
 	return msg, tooManyArgumentERR
