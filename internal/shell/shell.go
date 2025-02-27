@@ -20,23 +20,45 @@ func New()*Shell{
 func (s *Shell)Start(){
 	contine := true
 	for contine {
-		s.Show()
-		command := s.Read()
-		fmt.Print(command)
+		s.show()
+		command := s.read()
+		tokens, _ := s.tokenizer(command)
+		
+		for _, val := range tokens {
+			fmt.Println(val)
+		}
 	}
 }
 
-func (s *Shell)Read()(str string){
+func (s *Shell)read()(str string){
 	reader := bufio.NewReader(os.Stdin)
 	text, _ := reader.ReadString('\n')
 	return text
 }
 
-func  (s *Shell)Show(){
+func (s *Shell)show(){
 	if s.CurrentUser == nil {
 		fmt.Print("$ ")
 		return
 	}
 
 	fmt.Printf("%s :$",s.CurrentUser.UserName)
+}
+
+func (s *Shell)tokenizer(input string)(tokens []string,err error){
+
+	input += " "
+	var str []rune
+
+	for _, val := range input {
+
+		if val == ' ' && len(str) > 0{
+			tokens = append(tokens, string(str))
+			str = make([]rune, 0)
+		}else {
+			str = append(str, val)
+		}
+	}
+
+	return tokens, nil
 }
