@@ -14,6 +14,7 @@ import (
 func New() *Shell {
 	shell := &Shell{
 		Handlers: make(map[string]func(*Shell, []string) (string, error)),
+		status: true,
 	}
 
 	shell.register("cd", cd)
@@ -30,8 +31,7 @@ func New() *Shell {
 }
 
 func (s *Shell) Start() {
-	contine := true
-	for contine {
+	for s.status {
 		s.show()
 		command := s.read()
 		tokens, _ := s.tokenizer(command)

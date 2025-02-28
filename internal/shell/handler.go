@@ -85,17 +85,19 @@ func exit(s *Shell, args []string) (msg string, err error) {
 	code := 0
 	if len(args) <= 0 {
 		msg = fmt.Sprintf("exit status %d", code)
+		s.status = false
 		return
 	}
 
 	if len(args) <= 1 {
 		if code, err = strconv.Atoi(args[0]); err == nil {
 			msg = fmt.Sprintf("exit status %d", code)
+			s.status = false
 			return
 		}
 		return
 	}
-
+	
 	return msg, tooManyArgumentERR
 }
 

@@ -6,4 +6,5 @@ type Shell struct {
 	History     []string
 	CurrentUser *models.User
 	Handlers    map[string]func(*Shell, []string) (string, error)
+	status      bool
 }
