@@ -1,7 +1,15 @@
 package models
 
+import "errors"
+
 type User struct {
-	ID       int    `db:"id"`
-	UserName string `db:"userame"`
+	Username string `db:"username" `
 	Password string `db:"password"`
+}
+
+func (u *User)Validate()(err error){
+	if u.Username == ""{
+		return errors.New("expeted 'user' not be empty")
+	}
+	return nil
 }
