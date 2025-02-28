@@ -3,6 +3,7 @@ package shell
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -159,7 +160,7 @@ func (s *Shell) excute(args []string) (msg string,err error) {
 	if len(args) <= 0 {
 		return 
 	}
-
+	s.historyLogger(args[0])
 	cmd, ok := s.Handlers[args[0]]
 
 	if ok {
@@ -168,6 +169,10 @@ func (s *Shell) excute(args []string) (msg string,err error) {
 		msg, err = s.systemCommand(args)
 	}
 	
+	if err != nil && len(err.Error()) >= 5 && err.Error()[:5] ==  "exec:"{
+		
+		err = errors.New(args[0]+": command not found")
+	}
 	return msg, err
 }
 
@@ -189,6 +194,7 @@ func (s *Shell) systemCommand(args []string) (string, error) {
 
 func (s *Shell) historyLogger(command string) error {
 	if s.CurrentUser != nil {
+		fmt.Println("fffffffff")
 		return servise.AddCommandHistory(s.CurrentUser.Username, command)
 	}
 

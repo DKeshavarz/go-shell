@@ -14,8 +14,11 @@ import (
 )
 
 func echo(s *Shell, arg []string) (msg string, err error) {
-	for _, val := range arg {
-		msg += val + " "
+	for i, val := range arg {
+		msg += val 
+		if len(arg) != i + 1{
+			msg += " "
+		}
 	}
 	return
 }
@@ -61,6 +64,9 @@ func cd(s *Shell, args []string) (msg string, err error) {
 }
 
 func pwd(s *Shell, args []string) (msg string, err error) {
+	if len(args) > 0 {
+		return msg,tooManyArgumentERR
+	}
 	msg, err = os.Getwd()
 	return
 }
