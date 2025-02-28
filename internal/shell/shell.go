@@ -7,7 +7,9 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
+	"systemgroup.net/bootcamp/go/v1/shell/internal/models"
 	"systemgroup.net/bootcamp/go/v1/shell/internal/servise"
 )
 
@@ -116,6 +118,18 @@ func (s *Shell) historyLogger(command string)(error){
 		return servise.AddCommandHistory(s.CurrentUser.Username, command)
 	}
 
-	s.History = append(s.History, command)
+	for i := range s.History {
+		if s.History[i].Command == command{
+			s.History[i].Count++
+			s.History[i].CreatedAt = time.Now()
+			return nil
+		}
+	}
+
+	s.History = append(s.History, models.CommandHistory{
+		Command: command,
+		Count: 1,
+		CreatedAt: time.Now(),
+	})
 	return nil
 }

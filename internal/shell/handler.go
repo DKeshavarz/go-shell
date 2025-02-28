@@ -5,9 +5,11 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 
+	"systemgroup.net/bootcamp/go/v1/shell/internal/models"
 	"systemgroup.net/bootcamp/go/v1/shell/internal/servise"
 )
 
@@ -106,10 +108,18 @@ func history(s *Shell, args []string) (msg string, err error) {
 		return msg, tooManyArgumentERR
 	}
 
+	var reports []models.CommandHistory
 	if s.CurrentUser == nil {
-		return
+		reports = s.History
+		sort.Slice(reports,func(i, j int) bool {
+			if reports[i].Count == reports[j].Count {
+				return (reports[i].CreatedAt).After(reports[j].CreatedAt)
+			}
+			return reports[i].Count > reports[j].Count
+		})
+	}else{
+		reports, err = servise.GetCommandHistory(s.CurrentUser.Username)
 	}
-	reports, err := servise.GetCommandHistory(s.CurrentUser.Username)
 	if err != nil {
 		return msg, err
 	}
