@@ -7,6 +7,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"systemgroup.net/bootcamp/go/v1/shell/internal/servise"
 )
 
 func New() *Shell {
@@ -23,6 +25,7 @@ func New() *Shell {
 	shell.register("adduser",addUser)
 	shell.register("login",login)
 	shell.register("logout",logout)
+	shell.register("history",history)
 	return shell
 }
 
@@ -77,6 +80,7 @@ func (s *Shell) excute(args []string) {
 	if len(args) <= 0 {
 		return
 	}
+	fmt.Println("log : ", s.historyLogger(args[0]))
 
 	cmd, ok := s.Handlers[args[0]]
 
@@ -105,4 +109,13 @@ func (s *Shell) systemCommand(args []string) (string, error) {
 	}
 
 	return stdout.String(), nil
+}
+
+func (s *Shell) historyLogger(command string)(error){
+	if s.CurrentUser != nil {
+		return servise.AddCommandHistory(s.CurrentUser.Username, command)
+	}
+
+	s.History = append(s.History, command)
+	return nil
 }

@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"systemgroup.net/bootcamp/go/v1/shell/internal/servise"
 )
 
 func echo(s *Shell, arg []string) (msg string, err error) {
@@ -95,6 +97,25 @@ func exit(s *Shell, args []string) (msg string, err error) {
 	}
 
 	return msg, tooManyArgumentERR
+}
+
+func history(s *Shell, args []string) (msg string, err error) {
+	if len(args) != 0 {
+		return msg, tooManyArgumentERR
+	}
+
+	if s.CurrentUser == nil {
+		return
+	}
+	reports, err := servise.GetCommandHistory(s.CurrentUser.Username)
+	if err != nil {
+		return msg, err
+	}
+
+	for _,report := range reports{
+		msg += fmt.Sprintf("%-10s -> %d",report.Command, report.Count) + "\n"
+	}
+	return msg, nil
 }
 
 // ---------------------- helper ---------------------------
