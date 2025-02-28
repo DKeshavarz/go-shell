@@ -5,6 +5,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 const (
@@ -25,7 +26,9 @@ func init() {
 	dsn := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=disable",
 		dbHost, dbPort, dbName, dbUser, dbPass)
 
-	sesssion, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	sesssion, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger:  logger.Default.LogMode(logger.Silent) ,
+	})
 	if err != nil {
 		err = fmt.Errorf("unable to connect to database: %w", err)
 		panic(err)
