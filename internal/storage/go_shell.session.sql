@@ -3,7 +3,7 @@
 --     password VARCHAR(255) NOT NULL
 -- );
 
--- CREATE TABLE commands (
+-- CREATE TABLE command_histories (
 --     username   VARCHAR(255),
 --     command    VARCHAR(255),
 --     created_at TIMESTAMP NOT NULL,
@@ -11,6 +11,9 @@
 --     PRIMARY KEY(username,command),
 --     FOREIGN KEY(username) REFERENCES users (username) ON UPDATE CASCADE ON DELETE CASCADE
 -- );
+
+-- SELECT * FROM command_histories;
+
 
 
 
