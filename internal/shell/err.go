@@ -1,4 +1,4 @@
-package commands
+package shell
 
 import "errors"
 
