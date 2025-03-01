@@ -194,7 +194,6 @@ func (s *Shell) systemCommand(args []string) (string, error) {
 
 func (s *Shell) historyLogger(command string) error {
 	if s.CurrentUser != nil {
-		fmt.Println("fffffffff")
 		return servise.AddCommandHistory(s.CurrentUser.Username, command)
 	}
 
